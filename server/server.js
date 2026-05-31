@@ -3,30 +3,34 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import transcribeRoutes from './routes/transcribeRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Load environment variables
 dotenv.config();
 
 // Connect to Database
-connectDB();
+await connectDB();
 
 const app = express();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Allow all origins for local testing and easy deployment
+  origin: '*',
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
 }));
 app.use(express.json());
 
-// Main API Routes
+// Auth Routes
+app.use('/api/auth', authRoutes);
+
+// Transcription Routes
 app.use('/api', transcribeRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
-  res.status(200).json({ 
-    success: true, 
-    message: 'AI Speech-to-Text Transcriber API is running smoothly.' 
+  res.status(200).json({
+    success: true,
+    message: 'AI Speech-to-Text Transcriber API is running smoothly.',
   });
 });
 
@@ -34,7 +38,6 @@ app.get('/', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('Global Error Handler:', err);
 
-  // Multer file size error handling
   if (err.code === 'LIMIT_FILE_SIZE') {
     return res.status(400).json({
       success: false,
@@ -42,7 +45,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  // Other multer/upload errors or operational errors
   return res.status(err.status || 400).json({
     success: false,
     error: err.message || 'An unexpected error occurred.',

@@ -5,16 +5,13 @@ import {
   getTranscriptions,
   deleteTranscription,
 } from '../controllers/transcribeController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Route for transcription: takes an audio file (key: 'audio')
-router.post('/transcribe', upload.single('audio'), transcribeAudio);
-
-// Route for fetching all transcriptions
-router.get('/transcriptions', getTranscriptions);
-
-// Route for deleting a specific transcription
-router.delete('/transcriptions/:id', deleteTranscription);
+// Protected routes - require authentication
+router.post('/transcribe', protect, upload.single('audio'), transcribeAudio);
+router.get('/transcriptions', protect, getTranscriptions);
+router.delete('/transcriptions/:id', protect, deleteTranscription);
 
 export default router;

@@ -1,8 +1,11 @@
 import React from 'react';
 import { IoMdMic } from 'react-icons/io';
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+  const { user, logout, isAuthenticated } = useAuth();
+
   return (
     <nav className="sticky top-0 z-50 border-b border-darkBorder bg-darkBg/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,13 +26,36 @@ const Navbar = () => {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-slate-400">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              Whisper v1 Active
+              Whisper Active
             </span>
+
+            {isAuthenticated && user && (
+              <>
+                {/* User Badge */}
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/40 border border-slate-700/50">
+                  <FaUserCircle className="text-brand-400 text-sm" />
+                  <span className="text-xs font-medium text-slate-300 max-w-[120px] truncate">
+                    {user.name}
+                  </span>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20"
+                  title="Sign Out"
+                >
+                  <FaSignOutAlt className="text-sm" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              </>
+            )}
+
             <a
-              href="https://github.com"
+              href="https://github.com/Manan03-o-o/SpeechtoText"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/50 transition-all border border-transparent hover:border-slate-700/50"
